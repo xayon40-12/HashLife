@@ -21,6 +21,7 @@ private:
     const Tree *nw, *ne, *sw, *se;
     A value;
     int level;
+    long pow;
 
     Tree center() const{
         return {nw->se, ne->sw, sw->ne, se->nw};
@@ -33,16 +34,16 @@ private:
     }
 
 public:
-    Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0) {
+    Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0), pow(1) {
 
     }
-    Tree(Tree nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(0), level(nw.level+1)  {
+    Tree(Tree nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(0), level(nw.level+1), pow(2*nw.pow)  {
         this->nw = &(*trees.insert(nw).first);
         this->ne = &(*trees.insert(ne).first);
         this->sw = &(*trees.insert(sw).first);
         this->se = &(*trees.insert(se).first);
     }
-    Tree(Tree const &t): nw(t.nw), ne(t.ne), sw(t.sw), se(t.se), value(t.value), level(t.level) {
+    Tree(Tree const &t): nw(t.nw), ne(t.ne), sw(t.sw), se(t.se), value(t.value), level(t.level), pow(t.pow) {
 
     }
     Tree& operator=(Tree const &t){
@@ -52,6 +53,7 @@ public:
         se = t.se;
         value = t.value;
         level = t.level;
+        pow = t.pow;
         return *this;
     }
     ~Tree() {
@@ -119,7 +121,39 @@ public:
         }
     }
 
-    std::vector<A> getRect(int x1, int y1, int x2, int y2){
+    A get(long x, long y){
+        //   y/\
+        //    |
+        //–––––––––>x
+        //    |
+        //    |
+        Tree const *t(this);
+        long px = 0, py = 0;
+        long pow = getPow()/2;
+        while(t->getLevel() != 0){
+            pow /= 2;
+            if(x >= px && y >= py){
+                t = t->getNE();
+                px += pow;
+                py += pow;
+            } else if(x >= px && y < py){
+                t = t->getSE();
+                px += pow;
+                py -= pow;
+            } else if(x < px && y >= py){
+                t = t->getNW();
+                px -= pow;
+                py += pow;
+            } else if(x < px && y < py){
+                t = t->getSW();
+                px -= pow;
+                py -= pow;
+            }
+        }
+        return t->getValue();
+    }
+
+    std::vector<A> getRect(long x1, long y1, long x2, long y2){
         //TODO
     }
 
@@ -132,6 +166,7 @@ public:
         if(level == 2){
             //TODO life.update(tab)
             //TODO return centered updated tree
+            return Tree(0);
         }else{
             Tree t00 = nw->center();
             Tree t01 = Hcenter(nw, ne).center();
@@ -148,6 +183,10 @@ public:
                                                     Tree(t10, t11, t20, t21).nextGeneration(),
                                                     Tree(t11, t12, t21, t22).nextGeneration())}).first->second;
         }
+    }
+
+    long getPow() const{
+        return pow;
     }
 };
 
