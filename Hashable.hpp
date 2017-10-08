@@ -27,4 +27,15 @@ inline void hash_combine(std::size_t& seed, const T& v, Rest... rest) {
         };\
     }
 
+#define MAKE_HASHABLE_T(type, ...) \
+    namespace std {\
+        template<class C> struct hash<type<C>> {\
+            std::size_t operator()(const type<C> &t) const {\
+                std::size_t ret = 0;\
+                hash_combine(ret, __VA_ARGS__);\
+                return ret;\
+            }\
+        };\
+    }
+
 #endif //HASHLIFE_HASHABLE_HPP
