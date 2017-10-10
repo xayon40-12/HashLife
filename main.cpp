@@ -1,21 +1,23 @@
 #include <iostream>
+#include <unistd.h>
 #include "Tree.hpp"
 
 int main() {
     Life l0(0), l1(1);
-    Tree<Life> t1(l1, l1, l1, l0), t2(l1, l1, l0, l1), t3(l1, l1, l0, l0), t4(l1, l0, l0, l0);
+    Tree<Life> t1(l0, l1, l0, l1), t2(l0, l1, l0, l1), t3(l0, l1, l0, l0), t4(l1, l1, l0, l0);
     Tree<Life> tt(t1, t2, t3, t4);
     Tree<Life> t = tt;
-    for(int i = 0;i<12;i++){
+    for(int i = 0;i<32;i++){
         t = t.expend();
     }
 
-    long size = 2;
-    for(long y = size-1;y>=-size;y--){
-        for(long x = -size;x<size;x++){
-            std::cout << tt.get(x, y).getState();
-        }
-        std::cout << std::endl;
+    std::cout << "\033[2J";
+    for(;;){
+        std::cout << "\033[1;1H";
+        t.show(30);
+        t = t.expend().nextGeneration();
+        usleep(10*1000);
     }
+
     return 0;
 }

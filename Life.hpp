@@ -8,15 +8,17 @@
 
 #include "Automaton.hpp"
 #include "Hashable.hpp"
+#include "Tree.hpp"
 
-class Life: public Automaton {
+class Life: public Automaton<Life> {
 private:
     int state;
 public:
     Life(int state);
 
-    bool operator==(Life const &l) const;
-    void update(std::vector<Life> tab);
+    bool operator==(Life const &l) const override;
+    void update(std::vector<std::vector<Life>> tab, long x, long y) override;
+    std::string show() override;
 
     int getState() const;
 };

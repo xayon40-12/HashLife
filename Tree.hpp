@@ -8,36 +8,36 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <iostream>
+#include <sstream>
 #include "Hashable.hpp"
 #include "Automaton.hpp"
 #include "Life.hpp"
 
 template<class A>
-//typename std::enable_if<std::is_base_of<Automaton, A>::value, void>
-class Tree {
+class Tree{
 private:
     static std::unordered_set<Tree<A>> trees;
 
     const Tree *nw, *ne, *sw, *se;
     A value;
-    int level;
-    long pow;
+    unsigned int level;
+    long pow;//2^(level-1)
 
     Tree center() const{
-        return {nw->se, ne->sw, sw->ne, se->nw};
+        return {*nw->se, *ne->sw, *sw->ne, *se->nw};
     }
     Tree Hcenter(Tree const *w, const Tree *e) const{
-        return {w->ne, e->nw, w->se, e->sw};
+        return {*w->ne, *e->nw, *w->se, *e->sw};
     }
     Tree Vcenter(Tree const *n, Tree const *s) const{
-        return {n->sw, n->se, s->nw, s->ne};
+        return {*n->sw, *n->se, *s->nw, *s->ne};
     }
 
 public:
-    Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0), pow(1) {
+    Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0), pow(0) {
 
     }
-    Tree(Tree nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(0), level(nw.level+1), pow(2*nw.pow)  {
+    Tree(Tree<A> nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(0), level(nw.level+1), pow(nw.pow==0?1:2*nw.pow)  {
         this->nw = &(*trees.insert(nw).first);
         this->ne = &(*trees.insert(ne).first);
         this->sw = &(*trees.insert(sw).first);
@@ -56,9 +56,7 @@ public:
         pow = t.pow;
         return *this;
     }
-    ~Tree() {
-
-    }
+    ~Tree() = default;
 
     bool operator==(Tree const &t) const{
         return (nw == t.nw &&
@@ -110,10 +108,11 @@ public:
     }
 
     Tree expend() {
-        Tree e = generateEmpty(level-1);
         if(isLeaf()){
+            Tree e = generateEmpty(level);
             return Tree(*this, e, e, e);
         }else{
+            Tree e = generateEmpty(level-1);
             return Tree(Tree(e, e, e, *nw),
                         Tree(e, e, *ne, e),
                         Tree(e, *sw, e, e),
@@ -121,7 +120,7 @@ public:
         }
     }
 
-    A get(long x, long y){
+    A get(long x, long y) const{
         //   y/\
         //    |
         //–––––––––>x
@@ -129,7 +128,7 @@ public:
         //    |
         Tree const *t(this);
         long px = 0, py = 0;
-        long pow = getPow()/2;
+        long pow = getPow();
         while(t->getLevel() != 0){
             pow /= 2;
             if(x >= px && y >= py){
@@ -153,20 +152,42 @@ public:
         return t->getValue();
     }
 
-    std::vector<A> getRect(long x1, long y1, long x2, long y2){
-        //TODO
+    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) const{
+        std::vector<std::vector<A>> values;
+        if(x1>x2) std::swap(x1, x2);
+        if(y1<y2) std::swap(y1, y2);
+        long dx = x2 - x1, dy = y1 - y2;
+        for(long y = 0;y<=dy;y++){
+            values.push_back(std::vector<A>());
+            for(long x = 0;x<=dx;x++){
+                values[y].push_back(get(x1+x, y1-y));
+            }
+        }
+        return values;
+    }
+
+    std::vector<std::vector<A>> get() const{
+        return getRect(-pow, pow-1, pow-1, -pow);
     }
 
     Tree nextGeneration() const{
+        if(level < 2)
+            return *this;//can't update
+
         static std::unordered_map<Tree, Tree> momoizedNext;
         auto memo = momoizedNext.find(*this);
         if(memo != momoizedNext.end())
             return memo->second;
 
         if(level == 2){
-            //TODO life.update(tab)
-            //TODO return centered updated tree
-            return Tree(0);
+
+            auto tab = get(), tab2 = tab;
+            for(long y = 1;y<=2;y++){
+                for(long x = 1;x<=2;x++){
+                    tab[y][x].update(tab2, x, y);
+                }
+            }
+            return Tree(tab[1][1],tab[1][2],tab[2][1],tab[2][2]);
         }else{
             Tree t00 = nw->center();
             Tree t01 = Hcenter(nw, ne).center();
@@ -187,6 +208,28 @@ public:
 
     long getPow() const{
         return pow;
+    }
+
+    void show(long x1, long y1, long x2, long y2) const{
+        if(x1>x2) std::swap(x1, x2);
+        if(y1<y2) std::swap(y1, y2);
+        auto values = getRect(x1, y1, x2, y2);
+        long dx = x2 - x1, dy = y1 - y2;
+        std::ostringstream os;
+        for(long y = 0;y<=dy;y++){
+            for(long x = 0;x<=dx;x++){
+                os << values[y][x].show();
+            }
+            os << std::endl;
+        }
+        std::cout << os.str();
+    }
+
+    void show() const{
+        show(-pow, pow-1, pow-1, -pow);
+    }
+    void show(long l) const{
+        show(-l, l-1, l-1, -l);
     }
 };
 
