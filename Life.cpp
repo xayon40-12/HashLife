@@ -34,6 +34,6 @@ int Life::getState() const {
 
 std::string Life::show() {
     std::ostringstream oss;
-    oss << (state==1?"  ":"██");
+    oss << (state==1?"[]":"  ");
     return oss.str();
 }
