@@ -131,7 +131,7 @@ public:
         return {{nw, ne},{sw, se}};
     }
 
-    A get(long x, long y) {
+    A get(long x, long y) const{
         //   y/\
         //    |
         //–––––––––>x
@@ -163,7 +163,7 @@ public:
         return t->getValue();
     }
 
-    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) {
+    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) const{
         std::vector<std::vector<A>> values;
         if(x1>x2) std::swap(x1, x2);
         if(y1<y2) std::swap(y1, y2);
@@ -177,11 +177,11 @@ public:
         return values;
     }
 
-    std::vector<std::vector<A>> get() {
+    std::vector<std::vector<A>> get() const{
         return getRect(-pow, pow-1, pow-1, -pow);
     }
 
-    Tree nextGeneration() {
+    Tree nextGeneration() const{
         if(level < 2)
             return *this;//can't update
 

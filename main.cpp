@@ -11,17 +11,31 @@ int main() {
         t = t.expend();
     }*/
 
-    auto t = Tree<Life>(0).expend(43).set(-2, 1, 1, -2, {{0, 0, 0, 0},
+    auto t = Tree<Life>(0).expend(20).set(-2, 1, 1, -2, {{0, 0, 0, 0},
                                                          {0, 1, 0, 1},
                                                          {0, 1, 0, 1},
                                                          {0, 1, 1, 1}});
 
+    long size = 30;
     std::cout << "\033[2J";
-    for(;;){
+    for(long i = 0;;i++){
+        if(i%250 == 0)
+            t = Tree<Life>(0).expend(20).set(-2, 1, 1, -2, {{0, 0, 0, 0},
+                                                            {0, 1, 0, 1},
+                                                            {0, 1, 0, 1},
+                                                            {0, 1, 1, 1}});
         std::cout << "\033[1;1H";
-        t.show(30);
+        long time = std::clock(), t1, t2;
+
+        t.show(size);
+        t1 = std::clock()-time; time = std::clock();
+
         t = t.expend().nextGeneration();
-        usleep(10*1000);
+        t2 = std::clock()-time; time = std::clock();
+
+        std::cout << "\033[" << 2*size-1 << ";1H";
+        std::cout << "i:" << i << "   t1:" << t1 << "   t2:" << t2 << std::endl;
+        //usleep(100);
     }
 
     return 0;
