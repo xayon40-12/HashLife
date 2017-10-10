@@ -33,6 +33,20 @@ private:
         return {*n->sw, *n->se, *s->nw, *s->ne};
     }
 
+    const Tree* set(long tabX, long tabY, const Tree *t) const {
+        if(tabY == 0){// N
+            if(tabX == 0)// W
+                return &(*trees.insert(Tree(*t, *ne, *sw, *se)).first);
+            else// E
+                return &(*trees.insert(Tree(*nw, *t, *sw, *se)).first);
+        }else{// S
+            if(tabX == 0)// W
+                return &(*trees.insert(Tree(*nw, *ne, *t, *se)).first);
+            else// E
+                return &(*trees.insert(Tree(*nw, *ne, *sw, *t)).first);
+        }
+    }
+
 public:
     Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0), pow(0) {
 
@@ -243,20 +257,6 @@ public:
         show(-l, l-1, l-1, -l);
     }
 
-    const Tree* set(long tabX, long tabY, const Tree *t) const {
-        if(tabY == 0){// N
-            if(tabX == 0)// W
-                return &(*trees.insert(Tree(*t, *ne, *sw, *se)).first);
-            else// E
-                return &(*trees.insert(Tree(*nw, *t, *sw, *se)).first);
-        }else{// S
-            if(tabX == 0)// W
-                return &(*trees.insert(Tree(*nw, *ne, *t, *se)).first);
-            else// E
-                return &(*trees.insert(Tree(*nw, *ne, *sw, *t)).first);
-        }
-    }
-
     const Tree* set(long x, long y, A const &a, long px = 0, long py = 0) const {
         if(level == 0)
             return (getValue() == a)?this:&(*trees.insert(Tree(a)).first);
@@ -267,10 +267,8 @@ public:
         }
     }
 
-    Tree set(long x1, long y1, long x2, long y2, std::vector<std::vector<A>> tab) {
-        if(x1>x2) std::swap(x1, x2);
-        if(y1<y2) std::swap(y1, y2);
-        long dx = x2 - x1, dy = y1 - y2;
+    Tree set(long x1, long y1, std::vector<std::vector<A>> tab) {
+        long dx = tab[0].size()-1, dy = tab.size()-1;
         const Tree *t = this;
         for(long y = 0;y<=dy;y++){
             for(long x = 0;x<=dx;x++){
@@ -278,6 +276,10 @@ public:
             }
         }
         return *t;
+    }
+
+    Tree set(std::vector<std::vector<A>> tab){
+        return set(-(tab[0].size()/2), tab.size()/2, tab);
     }
 };
 
