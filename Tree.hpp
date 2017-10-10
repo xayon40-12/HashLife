@@ -23,13 +23,13 @@ private:
     unsigned int level;
     long pow;//2^(level-1)
 
-    Tree center() const{
+    Tree center() const {
         return {*nw->se, *ne->sw, *sw->ne, *se->nw};
     }
-    Tree Hcenter(Tree const *w, const Tree *e) const{
+    Tree Hcenter(Tree const *w, const Tree *e) const {
         return {*w->ne, *e->nw, *w->se, *e->sw};
     }
-    Tree Vcenter(Tree const *n, Tree const *s) const{
+    Tree Vcenter(Tree const *n, Tree const *s) const {
         return {*n->sw, *n->se, *s->nw, *s->ne};
     }
 
@@ -46,7 +46,7 @@ public:
     Tree(Tree const &t): nw(t.nw), ne(t.ne), sw(t.sw), se(t.se), value(t.value), level(t.level), pow(t.pow) {
 
     }
-    Tree& operator=(Tree const &t){
+    Tree& operator=(Tree const &t) {
         nw = t.nw;
         ne = t.ne;
         sw = t.sw;
@@ -58,7 +58,7 @@ public:
     }
     ~Tree() = default;
 
-    bool operator==(Tree const &t) const{
+    bool operator==(Tree const &t) const {
         return (nw == t.nw &&
                 ne == t.ne &&
                 sw == t.sw &&
@@ -67,20 +67,20 @@ public:
                 level == t.level);
     }
 
-    A getValue() const{
+    A getValue() const {
         return value;
     }
-    int getLevel() const{
+    int getLevel() const {
         return level;
     }
-    bool isLeaf() const{
+    bool isLeaf() const {
         return (nw == nullptr &&
                 ne == nullptr &&
                 sw == nullptr &&
                 se == nullptr);
     }
 
-    const Tree *getNW() const{
+    const Tree *getNW() const {
         return nw;
     }
     const Tree *getNE() const {
@@ -120,7 +120,18 @@ public:
         }
     }
 
-    A get(long x, long y) const{
+    Tree expend(unsigned long size){
+        if(size == 1)
+            return expend();
+        else
+            return expend(size-1).expend();
+    }
+
+    std::vector<std::vector<const Tree*>> getSubTrees() const{
+        return {{nw, ne},{sw, se}};
+    }
+
+    A get(long x, long y) {
         //   y/\
         //    |
         //–––––––––>x
@@ -152,7 +163,7 @@ public:
         return t->getValue();
     }
 
-    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) const{
+    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) {
         std::vector<std::vector<A>> values;
         if(x1>x2) std::swap(x1, x2);
         if(y1<y2) std::swap(y1, y2);
@@ -166,11 +177,11 @@ public:
         return values;
     }
 
-    std::vector<std::vector<A>> get() const{
+    std::vector<std::vector<A>> get() {
         return getRect(-pow, pow-1, pow-1, -pow);
     }
 
-    Tree nextGeneration() const{
+    Tree nextGeneration() {
         if(level < 2)
             return *this;//can't update
 
@@ -206,11 +217,11 @@ public:
         }
     }
 
-    long getPow() const{
+    long getPow() const {
         return pow;
     }
 
-    void show(long x1, long y1, long x2, long y2) const{
+    void show(long x1, long y1, long x2, long y2) {
         if(x1>x2) std::swap(x1, x2);
         if(y1<y2) std::swap(y1, y2);
         auto values = getRect(x1, y1, x2, y2);
@@ -225,11 +236,48 @@ public:
         std::cout << os.str();
     }
 
-    void show() const{
+    void show() {
         show(-pow, pow-1, pow-1, -pow);
     }
-    void show(long l) const{
+    void show(long l) {
         show(-l, l-1, l-1, -l);
+    }
+
+    const Tree* set(long tabX, long tabY, const Tree *t) const {
+        if(tabY == 0){// N
+            if(tabX == 0)// W
+                return &(*trees.insert(Tree(*t, *ne, *sw, *se)).first);
+            else// E
+                return &(*trees.insert(Tree(*nw, *t, *sw, *se)).first);
+        }else{// S
+            if(tabX == 0)// W
+                return &(*trees.insert(Tree(*nw, *ne, *t, *se)).first);
+            else// E
+                return &(*trees.insert(Tree(*nw, *ne, *sw, *t)).first);
+        }
+    }
+
+    const Tree* set(long x, long y, A const &a, long px = 0, long py = 0) const {
+        if(level == 0)
+            return (getValue() == a)?this:&(*trees.insert(Tree(a)).first);
+        else{
+            long dx = (x >= px), dy = (y >= py);
+            Tree t = *getSubTrees()[!dy][dx];//!dy because y axis is upside down in the array
+            return set(dx, !dy, t.set(x, y, a, px+(dx?1:-1)*t.getPow(), py+(dy?1:-1)*t.getPow()));
+        }
+    }
+
+    Tree set(long x1, long y1, long x2, long y2, std::vector<std::vector<A>> tab) {
+        if(x1>x2) std::swap(x1, x2);
+        if(y1<y2) std::swap(y1, y2);
+        long dx = x2 - x1, dy = y1 - y2;
+        const Tree *t = this;
+        for(long y = 0;y<=dy;y++){
+            for(long x = 0;x<=dx;x++){
+                t = t->set(x1+x, y1-y, tab[y][x]);
+            }
+        }
+        return *t;
     }
 };
 
