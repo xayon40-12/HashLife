@@ -2,7 +2,29 @@
 #include <unistd.h>
 #include "Tree.hpp"
 
-int main() {
+void life();
+void liquid();
+
+int main(int arc, char *argv[]) {
+    if(arc>1){
+        auto s = std::string(argv[1]);
+        if(s == "-help" || s == "-h" || s == "h" || s == "help"){
+            std::cout << "choices available:\n1: life\n2: liquid" << std::endl;
+        }else if(s == "life" || s == "1")
+            life();
+        else if(s == "liquid" || s == "2")
+            liquid();
+    }else{
+        life();
+    }
+    return 0;
+}
+
+void liquid(){
+
+}
+
+void life(){
     /*Life l0(0), l1(1);
     Tree<Life> t1(l0, l1, l0, l1), t2(l0, l1, l0, l1), t3(l0, l1, l0, l0), t4(l1, l1, l0, l0);
     Tree<Life> tt(t1, t2, t3, t4);
@@ -37,6 +59,4 @@ int main() {
         std::cout << "i:" << i << "   t1:" << t1 << "   t2:" << t2 << std::endl;
         //usleep(100);
     }
-
-    return 0;
 }
