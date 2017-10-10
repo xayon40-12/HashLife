@@ -20,6 +20,8 @@ public:
     void update(std::vector<std::vector<Life>> tab, long x, long y) override;
     std::string show() override;
 
+    static long detectionLength();
+
     int getState() const;
 };
 

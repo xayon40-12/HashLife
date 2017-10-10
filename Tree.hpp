@@ -204,7 +204,7 @@ public:
         if(memo != momoizedNext.end())
             return memo->second;
 
-        if(level == 2){
+        if(level-1 == A::detectionLength()){
 
             auto tab = get(), tab2 = tab;
             for(long y = 1;y<=2;y++){
