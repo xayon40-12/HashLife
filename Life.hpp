@@ -14,6 +14,7 @@ class Life: public Automaton<Life> {
 private:
     int state;
 public:
+    Life();
     Life(int state);
 
     bool operator==(Life const &l) const override;

@@ -17,5 +17,6 @@ public:
     //static long detectionLength()  //MUST BE OVERRIDED
 };
 
+//MAKE_HASHABLE(A, t.val1, t.val2, ...)  //MUST BE DONE
 
 #endif //HASHLIFE_AUTOMATON_HPP

@@ -1,23 +1,40 @@
 #include <iostream>
 #include <unistd.h>
 #include "Tree.hpp"
+#include "Rule.hpp"
 
 void life();
 void liquid();
+void rule(int n);
 
 int main(int arc, char *argv[]) {
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
-            std::cout << "choices available:\n1: life\n2: liquid" << std::endl;
+            std::cout << "choices available:\n1: life\n2: liquid\n3: rule" << std::endl;
         }else if(s == "life" || s == "1")
             life();
         else if(s == "liquid" || s == "2")
             liquid();
+        else if(s == "rule" || s == "3"){
+            rule(30);
+        }
     }else{
         life();
     }
     return 0;
+}
+
+void rule(int n){
+    long size = 24;
+    std::cout << "\033[2J\033[?25l";
+    Rule e = {0, n};
+    auto t = Tree<Rule>(e).expend(size, e).set(0, size-1, {1, n});
+    for(long i = 0;;i++){
+        t.show(size);
+        t = t.expend(e).nextGeneration();
+        //usleep(100);
+    }
 }
 
 void liquid(){

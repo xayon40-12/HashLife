@@ -33,17 +33,17 @@ private:
         return {*n->sw, *n->se, *s->nw, *s->ne};
     }
 
-    const Tree* set(long tabX, long tabY, const Tree *t) const {
+    Tree set(long tabX, long tabY, Tree t) {
         if(tabY == 0){// N
             if(tabX == 0)// W
-                return &(*trees.insert(Tree(*t, *ne, *sw, *se)).first);
+                return Tree(t, *ne, *sw, *se);
             else// E
-                return &(*trees.insert(Tree(*nw, *t, *sw, *se)).first);
+                return Tree(*nw, t, *sw, *se);
         }else{// S
             if(tabX == 0)// W
-                return &(*trees.insert(Tree(*nw, *ne, *t, *se)).first);
+                return Tree(*nw, *ne, t, *se);
             else// E
-                return &(*trees.insert(Tree(*nw, *ne, *sw, *t)).first);
+                return Tree(*nw, *ne, *sw, t);
         }
     }
 
@@ -51,7 +51,7 @@ public:
     Tree(A value): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(value), level(0), pow(0) {
 
     }
-    Tree(Tree<A> nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(0), level(nw.level+1), pow(nw.pow==0?1:2*nw.pow)  {
+    Tree(Tree nw, Tree ne, Tree sw, Tree se): nw(nullptr), ne(nullptr), sw(nullptr), se(nullptr), value(), level(nw.level+1), pow(nw.pow==0?1:2*nw.pow)  {
         this->nw = &(*trees.insert(nw).first);
         this->ne = &(*trees.insert(ne).first);
         this->sw = &(*trees.insert(sw).first);
@@ -107,26 +107,26 @@ public:
         return se;
     }
 
-    static Tree generateEmpty(unsigned int level) {
+    static Tree generate(unsigned int level, const A &a = A()) {
         static std::unordered_map<unsigned int, Tree> memoizedEmpty;
         auto memo = memoizedEmpty.find(level);
         if(memo != memoizedEmpty.end())
             return memo->second;
 
         if (level == 0) {
-            return memoizedEmpty.insert({level, Tree(0)}).first->second;
+            return memoizedEmpty.insert({level, Tree(a)}).first->second;
         } else {
-            return memoizedEmpty.insert({level, {generateEmpty(level - 1), generateEmpty(level - 1), generateEmpty(level - 1),
-                                                 generateEmpty(level - 1)}}).first->second;
+            return memoizedEmpty.insert({level, {generate(level - 1, a), generate(level - 1, a), generate(level - 1, a),
+                                                 generate(level - 1, a)}}).first->second;
         }
     }
 
-    Tree expend() {
+    Tree expend(const A &a = A()) {
         if(isLeaf()){
-            Tree e = generateEmpty(level);
+            Tree e = generate(level, a);
             return Tree(*this, e, e, e);
         }else{
-            Tree e = generateEmpty(level-1);
+            Tree e = generate(level - 1, a);
             return Tree(Tree(e, e, e, *nw),
                         Tree(e, e, *ne, e),
                         Tree(e, *sw, e, e),
@@ -134,18 +134,18 @@ public:
         }
     }
 
-    Tree expend(unsigned long size){
+    Tree expend(unsigned long size, const A &a = A()){
         if(size == 1)
-            return expend();
+            return expend(a);
         else
-            return expend(size-1).expend();
+            return expend(size-1, a).expend(a);
     }
 
-    std::vector<std::vector<const Tree*>> getSubTrees() const{
+    std::vector<std::vector<const Tree*>> getSubTrees() {
         return {{nw, ne},{sw, se}};
     }
 
-    A get(long x, long y) const{
+    A get(long x, long y) {
         //   y/\
         //    |
         //–––––––––>x
@@ -177,7 +177,7 @@ public:
         return t->getValue();
     }
 
-    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) const{
+    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2) {
         std::vector<std::vector<A>> values;
         if(x1>x2) std::swap(x1, x2);
         if(y1<y2) std::swap(y1, y2);
@@ -191,11 +191,11 @@ public:
         return values;
     }
 
-    std::vector<std::vector<A>> get() const{
+    std::vector<std::vector<A>> get() {
         return getRect(-pow, pow-1, pow-1, -pow);
     }
 
-    Tree nextGeneration() const{
+    Tree nextGeneration() {
         if(level < 2)
             return *this;//can't update
 
@@ -255,9 +255,9 @@ public:
         show(-l, l-1, l-1, -l);
     }
 
-    const Tree* set(long x, long y, A const &a, long px = 0, long py = 0) const {
+    Tree set(long x, long y, A const &a, long px = 0, long py = 0) {
         if(level == 0)
-            return (getValue() == a)?this:&(*trees.insert(Tree(a)).first);
+            return (getValue() == a)?*this:Tree(a);
         else{
             long dx = (x >= px), dy = (y >= py);
             Tree t = *getSubTrees()[!dy][dx];//!dy because y axis is upside down in the array
@@ -267,13 +267,13 @@ public:
 
     Tree set(long x1, long y1, std::vector<std::vector<A>> tab) {
         long dx = tab[0].size()-1, dy = tab.size()-1;
-        const Tree *t = this;
+        Tree t = *this;
         for(long y = 0;y<=dy;y++){
             for(long x = 0;x<=dx;x++){
-                t = t->set(x1+x, y1-y, tab[y][x]);
+                t = t.set(x1+x, y1-y, tab[y][x]);
             }
         }
-        return *t;
+        return t;
     }
 
     Tree set(std::vector<std::vector<A>> tab){

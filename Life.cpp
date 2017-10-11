@@ -5,6 +5,10 @@
 #include <sstream>
 #include "Life.hpp"
 
+Life::Life(): state(0) {
+
+}
+
 Life::Life(int state): state(state) {
 
 }
