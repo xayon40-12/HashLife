@@ -38,15 +38,15 @@ void life(){
                                                   {0, 1, 0, 1},
                                                   {0, 1, 1, 1}});
 
-    long size = 30;
-    std::cout << "\033[2J";
+    long size = 24;
+    std::cout << "\033[2J\033[?25l";
     for(long i = 0;;i++){
         if(i%250 == 0)
             t = Tree<Life>(0).expend(20).set({{0, 0, 0, 0},
                                               {0, 1, 0, 1},
                                               {0, 1, 0, 1},
                                               {0, 1, 1, 1}});
-        std::cout << "\033[1;1H";
+
         long time = std::clock(), t1, t2;
 
         t.show(size);

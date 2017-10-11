@@ -243,11 +243,9 @@ public:
         std::ostringstream os;
         for(long y = 0;y<=dy;y++){
             for(long x = 0;x<=dx;x++){
-                os << values[y][x].show();
+                values[y][x].show(x, y);
             }
-            os << std::endl;
         }
-        std::cout << os.str();
     }
 
     void show() {

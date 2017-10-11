@@ -28,10 +28,10 @@ void Life::update(std::vector<std::vector<Life>> tab, long x, long y) {
     else if(sum != 2) state = 0;
 }
 
-std::string Life::show() {
+void Life::show(long x, long y) {
     std::ostringstream oss;
     oss << (state==1?"[]":"  ");
-    return oss.str();
+    std::cout << "\033[" << y+1 << ";" << 2*x+1 << "H" << oss.str();
 }
 
 long Life::detectionLength() {
