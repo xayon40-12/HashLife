@@ -2,16 +2,18 @@
 #include <unistd.h>
 #include "Tree.hpp"
 #include "Rule.hpp"
+#include "Wireworld.hpp"
 
 void life();
 void liquid();
 void rule(int n);
+void wireworld();
 
 int main(int arc, char *argv[]) {
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
-            std::cout << "choices available:\n1: life\n2: liquid\n3: rule" << std::endl;
+            std::cout << "choices available:\n1: life\n2: liquid\n3: rule [n]\n4: wireworld" << std::endl;
         }else if(s == "life" || s == "1")
             life();
         else if(s == "liquid" || s == "2")
@@ -21,11 +23,29 @@ int main(int arc, char *argv[]) {
                 rule(std::atoi(argv[2]));
             }else
                 rule(-1);
-        }
+        }else if(s == "wireworld" || s == "4")
+            wireworld();
     }else{
         life();
     }
     return 0;
+}
+
+void wireworld(){
+    long size = 24;
+    std::cout << "\033[2J\033[?25l";
+    Tree<Wireworld> t = Tree<Wireworld>(0).expend(size).set(
+            {{0,0,0,0,0,0},
+             {0,0,1,2,0,0},
+             {0,3,0,0,3,0},
+             {0,0,3,3,0,0},
+             {0,0,0,0,0,0}}
+    );
+    for(long i = 0;;i++){
+        t.show(size);
+        t = t.expend().nextGeneration();
+        usleep(100000);
+    }
 }
 
 void rule(int n){
@@ -42,7 +62,7 @@ void rule(int n){
         }
         t.show(size);
         t = t.expend({0, n}).nextGeneration();
-        //usleep(100);
+        usleep(100);
     }
 }
 

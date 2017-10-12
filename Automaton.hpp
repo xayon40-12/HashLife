@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <sstream>
 
 template <class A>
 class Automaton {
@@ -19,6 +20,6 @@ public:
 
 //MAKE_HASHABLE(A, t.val1, t.val2, ...)  //MUST BE DONE
 
-#define color(s,n) ("\033[48;5;" #n "m"  s  "\033[0m")
+std::string color(std::string s,int n);
 
 #endif //HASHLIFE_AUTOMATON_HPP
