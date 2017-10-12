@@ -17,6 +17,8 @@ template<class A>
 class Tree{
 private:
     static std::unordered_set<Tree<A>> trees;
+    static std::unordered_map<unsigned int, Tree> memoizedEmpty;
+    static std::unordered_map<Tree, Tree> momoizedNext;
 
     const Tree *nw, *ne, *sw, *se;
     A value;
@@ -108,7 +110,6 @@ public:
     }
 
     static Tree generate(unsigned int level, const A &a = A()) {
-        static std::unordered_map<unsigned int, Tree> memoizedEmpty;
         auto memo = memoizedEmpty.find(level);
         if(memo != memoizedEmpty.end())
             return memo->second;
@@ -199,7 +200,6 @@ public:
         if(level < 2)
             return *this;//can't update
 
-        static std::unordered_map<Tree, Tree> momoizedNext;
         auto memo = momoizedNext.find(*this);
         if(memo != momoizedNext.end())
             return memo->second;
@@ -279,10 +279,17 @@ public:
     Tree set(std::vector<std::vector<A>> tab){
         return set(-(tab[0].size()/2), tab.size()/2, tab);
     }
+
+    static void reset(){
+        trees.clear();
+        memoizedEmpty.clear();
+        momoizedNext.clear();
+    }
 };
 
-template<class A>
-std::unordered_set<Tree<A>> Tree<A>::trees;
+template<class A> std::unordered_set<Tree<A>> Tree<A>::trees;
+template<class A> std::unordered_map<unsigned int, Tree<A>> Tree<A>::memoizedEmpty;
+template<class A> std::unordered_map<Tree<A>, Tree<A>> Tree<A>::momoizedNext;
 
 MAKE_HASHABLE_T(Tree, t.getSE(), t.getSW(), t.getNE(), t.getNW(), t.getLevel(), t.getValue())
 

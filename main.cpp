@@ -17,7 +17,10 @@ int main(int arc, char *argv[]) {
         else if(s == "liquid" || s == "2")
             liquid();
         else if(s == "rule" || s == "3"){
-            rule(30);
+            if(arc>2){
+                rule(std::atoi(argv[2]));
+            }else
+                rule(-1);
         }
     }else{
         life();
@@ -28,11 +31,17 @@ int main(int arc, char *argv[]) {
 void rule(int n){
     long size = 24;
     std::cout << "\033[2J\033[?25l";
-    Rule e = {0, n};
-    auto t = Tree<Rule>(e).expend(size, e).set(0, size-1, {1, n});
+    bool change = (n == -1);
+    if(change) n = 0;
+    Tree<Rule> t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, size-1, Rule(1, n));
     for(long i = 0;;i++){
+        if(i%(2*size) == 0 && change){
+            n++;
+            Tree<Rule>::reset();
+            t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, size-1, Rule(1, n));
+        }
         t.show(size);
-        t = t.expend(e).nextGeneration();
+        t = t.expend({0, n}).nextGeneration();
         //usleep(100);
     }
 }

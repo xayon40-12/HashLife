@@ -25,7 +25,7 @@ void Rule::update(std::vector<std::vector<Rule>> tab, long x, long y) {
 
 void Rule::show(long x, long y) {
     std::ostringstream oss;
-    oss << (state==1?"[]":"  ");
+    oss << (state==1?color("  ",15):"  ");
     std::cout << "\033[" << y+1 << ";" << 2*x+1 << "H" << oss.str();
 }
 

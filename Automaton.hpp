@@ -19,4 +19,6 @@ public:
 
 //MAKE_HASHABLE(A, t.val1, t.val2, ...)  //MUST BE DONE
 
+#define color(s,n) ("\033[48;5;" #n "m"  s  "\033[0m")
+
 #endif //HASHLIFE_AUTOMATON_HPP
