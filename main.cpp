@@ -1,19 +1,24 @@
 #include <iostream>
 #include <unistd.h>
+
 #include "Tree.hpp"
 #include "Rule.hpp"
 #include "Wireworld.hpp"
+#include "Cave.hpp"
+
 
 void life();
 void liquid();
 void rule(int n);
 void wireworld();
+void cave();
 
 int main(int arc, char *argv[]) {
+    srand(time(0));
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
-            std::cout << "choices available:\n1: life\n2: liquid\n3: rule [n]\n4: wireworld" << std::endl;
+            std::cout << "choices available:\n1: life\n2: liquid\n3: rule [n]\n4: wireworld\n5: cave" << std::endl;
         }else if(s == "life" || s == "1")
             life();
         else if(s == "liquid" || s == "2")
@@ -25,21 +30,58 @@ int main(int arc, char *argv[]) {
                 rule(-1);
         }else if(s == "wireworld" || s == "4")
             wireworld();
+        else if(s == "cave" || s == "5")
+            cave();
     }else{
         life();
     }
     return 0;
 }
 
+void cave(){
+    long size = 24;
+    std::cout << "\033[2J\033[?25l";
+    Tree<Cave> t = Tree<Cave>(0).expend(size);
+    for(int y = -size;y<size;y++){
+        for(int x = -size;x<size;x++){
+            t = t.set(x, y, Cave(rand()%2));
+        }
+    }
+    for(long i = 0;;i++){
+        t.show(size);
+        /*t.show(-size,size-1-i,size-1,-size-i);
+        if(i%size == 0)
+        for(int y = -size-(i+2)*size;y<size-(i+2)*size;y++){
+            for(int x = -size;x<size;x++){
+                t = t.set(x, y, Cave(rand()%2));
+            }
+        }*/
+        t = t.expend().nextGeneration();
+        usleep(10000);
+    }
+}
+
 void wireworld(){
     long size = 24;
     std::cout << "\033[2J\033[?25l";
     Tree<Wireworld> t = Tree<Wireworld>(0).expend(size).set(
-            {{0,0,0,0,0,0},
-             {0,0,1,2,0,0},
-             {0,3,0,0,3,0},
-             {0,0,3,3,0,0},
-             {0,0,0,0,0,0}}
+            {{0,3,1,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             {3,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             {3,0,0,0,0,3,0,0,0,0,0,0,3,3,3,3,3,3,3,3,0},
+             {3,0,0,0,0,3,0,0,0,0,0,0,3,3,3,3,3,3,3,3,0},
+             {0,3,3,3,3,0,3,3,3,0,0,0,3,3,3,3,3,3,3,3,0},
+             {0,0,0,3,0,0,0,3,0,3,0,0,3,3,3,3,3,3,3,3,0},
+             {0,0,0,3,0,0,0,0,3,0,0,0,3,3,3,3,3,3,3,3,0},
+             {0,0,0,3,0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,3,0},
+             {0,0,0,3,0,0,0,0,0,0,0,0,1,3,3,3,3,3,3,3,0},
+             {0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             {0,0,0,0,0,3,0,0,3,3,3,3,3,3,3,0,0,3,0,0,0},
+             {0,0,0,0,0,0,3,3,3,3,3,3,3,3,3,3,3,0,3,0,0},
+             {0,0,0,0,0,0,0,0,3,3,3,3,3,3,3,0,0,3,0,0,0},
+             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+             {0,3,3,3,0,3,3,3,0,3,3,3,0,3,3,3,0,0,0,0,0},
+             {0,3,3,1,3,0,0,0,3,0,0,0,3,3,3,3,0,0,0,0,0},
+             {0,3,3,3,0,3,3,3,0,3,3,3,0,3,3,3,0,0,0,0,0}}
     );
     for(long i = 0;;i++){
         t.show(size);
@@ -53,14 +95,18 @@ void rule(int n){
     std::cout << "\033[2J\033[?25l";
     bool change = (n == -1);
     if(change) n = 0;
-    Tree<Rule> t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, size-1, Rule(1, n));
+    Tree<Rule> t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, -size, Rule(1, n));
     for(long i = 0;;i++){
         if(i%(2*size) == 0 && change){
             n++;
             Tree<Rule>::reset();
             t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, size-1, Rule(1, n));
         }
-        t.show(size);
+        if(change){
+            t.show(size);
+            std::cout << std::endl << "rule: " << n << std::endl;
+        }else
+            t.show(-size,size-1-i,size-1,-size-i);
         t = t.expend({0, n}).nextGeneration();
         usleep(100);
     }
