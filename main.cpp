@@ -44,18 +44,17 @@ void cave(){
     Tree<Cave> t = Tree<Cave>(0).expend(size);
     for(int y = -size;y<size;y++){
         for(int x = -size;x<size;x++){
-            t = t.set(x, y, Cave(rand()%2));
+            t = t.set(x, y, Cave(rand()%2 + 1));
         }
     }
     for(long i = 0;;i++){
-        t.show(size);
-        /*t.show(-size,size-1-i,size-1,-size-i);
+        t.show(-size,size-1-i,size-1,-size-i);
         if(i%size == 0)
-        for(int y = -size-(i+2)*size;y<size-(i+2)*size;y++){
+        for(int y = -2*size-i;y < -size-i;y++){
             for(int x = -size;x<size;x++){
-                t = t.set(x, y, Cave(rand()%2));
+                t = t.set(x, y, Cave(rand()%2 + 1));
             }
-        }*/
+        }
         t = t.expend().nextGeneration();
         usleep(10000);
     }
