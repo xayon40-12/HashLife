@@ -50,17 +50,13 @@ public:
     const Tree<A> *getSE() const;
 
     static Tree<A> generate(unsigned int level, const A &a = A());
-
     Tree<A> expend(const A &a = A());
-
     Tree<A> expend(unsigned long size, const A &a = A());
 
     std::vector<std::vector<const Tree<A>*>> getSubTrees();
 
     A get(long x, long y);
-
     std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2);
-
     std::vector<std::vector<A>> get();
 
     Tree<A> nextGeneration();
@@ -68,14 +64,11 @@ public:
     long getPow() const;
 
     void show(long x1, long y1, long x2, long y2);
-
     void show();
     void show(long l);
 
     Tree<A> set(long x, long y, A const &a, long px = 0, long py = 0);
-
     Tree<A> set(long x1, long y1, std::vector<std::vector<A>> tab);
-
     Tree<A> set(std::vector<std::vector<A>> tab);
 
     static void reset();
