@@ -9,7 +9,7 @@
 #include "Automaton.hpp"
 #include "Hashable.hpp"
 
-enum Type {air, rock};
+enum Type {air, rock, sand};
 
 class Physics: public Automaton<Physics> {
 private:
