@@ -46,7 +46,7 @@ void physics(){
     long size = 24;
     std::cout << "\033[2J\033[?25l";
     Physics a(0,air), r(0,rock);
-    /*Tree<Physics> t = Tree<Physics>::generate(size).set(
+    Tree<Physics> t = Tree<Physics>::generate(size).set(
             {{a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,},
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,},
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,},
@@ -80,9 +80,7 @@ void physics(){
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,},
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,},
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,}}
-    );*/
-
-    Tree<Physics> t = Tree<Physics>::generate(size);
+    );
 
     for(long i = 0;;i++){
         t.show(size);

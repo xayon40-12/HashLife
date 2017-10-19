@@ -186,15 +186,20 @@ template<class A> Tree<A> Tree<A>::nextGeneration() {
     if(memo != momoizedNext.end())
         return memo->second;
 
-    if(level-1 == A::detectionLength()){
+    auto det = A::detectionLength();
+    if(level-1 == det){
 
-        auto tab = get(), tab2 = tab;
-        for(long y = 1;y<=2;y++){
-            for(long x = 1;x<=2;x++){
-                tab[y][x].update(tab2, x, y);
+        auto tab = get();
+        std::vector<std::vector<A>> tab2;
+        auto p2 = pow/2;
+        for(long y = p2;y<3*pow/2;y++){
+            tab2.push_back(std::vector<A>());
+            for(long x = pow/2;x<3*pow/2;x++){
+                tab2[y-p2].push_back(tab[y][x]);
+                tab2[y-p2][x-p2].update(tab, x, y);
             }
         }
-        return Tree<A>(tab[1][1],tab[1][2],tab[2][1],tab[2][2]);
+        return generate(det).set(tab2);
     }else{
         Tree<A> t00 = nw->center();
         Tree<A> t01 = Hcenter(nw, ne).center();
@@ -259,7 +264,7 @@ template<class A> Tree<A> Tree<A>::set(long x1, long y1, std::vector<std::vector
 }
 
 template<class A> Tree<A> Tree<A>::set(std::vector<std::vector<A>> tab){
-    return set(-(tab[0].size()/2), tab.size()/2, tab);
+    return set(-(tab[0].size()/2), tab.size()/2-1, tab);
 }
 
 template<class A> void Tree<A>::reset(){
