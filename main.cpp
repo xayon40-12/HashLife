@@ -9,7 +9,6 @@
 
 
 void life();
-void liquid();
 void rule(int n);
 void wireworld();
 void cave();
@@ -20,21 +19,19 @@ int main(int arc, char *argv[]) {
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
-            std::cout << "choices available:\n1: life\n2: liquid\n3: rule [n]\n4: wireworld\n5: cave\n6: physics" << std::endl;
+            std::cout << "choices available:\n1: life\n2: rule [n]\n3: wireworld\n4: cave\n5: physics" << std::endl;
         }else if(s == "life" || s == "1")
             life();
-        else if(s == "liquid" || s == "2")
-            liquid();
-        else if(s == "rule" || s == "3"){
+        else if(s == "rule" || s == "2"){
             if(arc>2){
                 rule(std::atoi(argv[2]));
             }else
                 rule(-1);
-        }else if(s == "wireworld" || s == "4")
+        }else if(s == "wireworld" || s == "3")
             wireworld();
-        else if(s == "cave" || s == "5")
+        else if(s == "cave" || s == "4")
             cave();
-        else if(s == "physics" || s == "6")
+        else if(s == "physics" || s == "5")
             physics();
     }else{
         life();
@@ -160,10 +157,6 @@ void rule(int n){
         t = t.expend({0, n}).nextGeneration();
         usleep(100);
     }
-}
-
-void liquid(){
-
 }
 
 void life(){
