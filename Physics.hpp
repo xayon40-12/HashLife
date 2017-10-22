@@ -9,7 +9,7 @@
 #include "Automaton.hpp"
 #include "Hashable.hpp"
 
-enum Type {air, rock, sand};
+enum Type {air, rock, sand, sandGenerator};
 
 class Physics: public Automaton<Physics> {
 private:
@@ -17,11 +17,15 @@ private:
     Type type;
 public:
     Physics();
-    Physics(int state, Type type);
+    Physics(Type type, int state = 0);
 
     bool operator==(Physics const &l) const override;
     void update(std::vector<std::vector<Physics>> tab, long x, long y) override;
     void show(long x, long y) override;
+
+    void be(Type type, int state = 0);
+    bool is(Type type);
+    bool has(int state);
 
     static long detectionLength();
 
