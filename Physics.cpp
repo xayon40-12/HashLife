@@ -33,28 +33,23 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
     auto dl = tab[y+1][x-1], d = tab[y+1][x], dr = tab[y+1][x+1];
 
     if(is(sand)){
-        if((dl.is(air,right) && l.is(air)) ||
-           (d.is(air)) ||
-           (dr.is(air,left) && r.is(air))){
+        if(d.is(air) || (has(right) && dr.is(air) && r.is(air)) || (has(left) && dl.is(air) && l.is(air))){
             be(air);
-        }
-    }else if(is(air)){
-        if(u.is(sand)){
-            be(sand);
-        }else if(uu.is(sandGenerator)){
-            be(sand);
-        }else if(u.is(air)) {
-            if(has(right)){
-                if (!r.is(air) && ur.is(sand)) {
-                    be(sand);
-                }
-            }else if(has(left)){
-                if (!l.is(air) && ul.is(sand)) {
-                    be(sand);
-                }
-            }
         }else{
             state = !state;
+        }
+    }else if(is(sandGenerator)){
+        state = !state;
+    }else if(is(air)){
+        if(u.is(sand) || uu.is(sandGenerator)){
+            be(sand, !u.state);
+        }else if(u.is(air)){
+            if(ul.is(sand,right) && !l.is(air)){
+                be(sand, left);
+            }
+            if(ur.is(sand,left) && !r.is(air)){
+                be(sand, right);
+            }
         }
     }
 }
