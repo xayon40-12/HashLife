@@ -33,9 +33,9 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
     auto dl = tab[y+1][x-1], d = tab[y+1][x], dr = tab[y+1][x+1];
 
     if(is(sand)){
-        if((dl.is(air) && l.is(air)) ||
-                (d.is(air)) ||
-                (dr.is(air) && r.is(air))){
+        if((dl.is(air,right) && l.is(air)) ||
+           (d.is(air)) ||
+           (dr.is(air,left) && r.is(air))){
             be(air);
         }
     }else if(is(air)){
@@ -44,19 +44,14 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
         }else if(uu.is(sandGenerator)){
             be(sand);
         }else if(u.is(air)) {
-            if(has(1)){
-
-            }
-            if (!l.is(air) && ul.is(sand)) {
-                /*if (ul.getState() == 1 || ll.getType() != air || ull.getType() != air) {
-                    type = sand;
-                    state = !ul.getState();
-                }*/
-            } else if (!r.is(air) && ur.is(sand)) {
-                /*if (ur.getState() == 0 || rr.getType() != air || urr.getType() != air) {
-                    type = sand;
-                    state = !ur.getState();
-                }*/
+            if(has(right)){
+                if (!r.is(air) && ur.is(sand)) {
+                    be(sand);
+                }
+            }else if(has(left)){
+                if (!l.is(air) && ul.is(sand)) {
+                    be(sand);
+                }
             }
         }else{
             state = !state;
@@ -77,7 +72,11 @@ void Physics::be(Type type, int state) {
 }
 
 bool Physics::is(Type type) {
-    return this->type = type;
+    return this->type == type;
+}
+
+bool Physics::is(Type type, int state) {
+    return this->type == type && this->state == state;
 }
 
 bool Physics::has(int state) {

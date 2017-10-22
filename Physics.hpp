@@ -26,6 +26,7 @@ public:
 
     void be(Type type, int state = 0);
     bool is(Type type);
+    bool is(Type type, int state);
     bool has(int state);
 
     static long detectionLength();
