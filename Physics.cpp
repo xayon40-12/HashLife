@@ -11,7 +11,7 @@ Physics::Physics(): state(0), type(air) {
 
 }
 
-Physics::Physics(int state, Type type): state(state), type(type) {
+Physics::Physics(Type type, int state): state(state), type(type) {
 
 }
 
@@ -32,10 +32,8 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
     auto ll = tab[y][x-2],l = tab[y][x-1], r = tab[y][x+1], rr = tab[y][x+2];
     auto dl = tab[y+1][x-1], d = tab[y+1][x], dr = tab[y+1][x+1];
 
-    if(type == sand){
-        if(u.getType() == sandGenerator){
-            be(sand);
-        }else if((dl.is(air) && l.is(air)) ||
+    if(is(sand)){
+        if((dl.is(air) && l.is(air)) ||
                 (d.is(air)) ||
                 (dr.is(air) && r.is(air))){
             be(air);
@@ -46,6 +44,9 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
         }else if(uu.is(sandGenerator)){
             be(sand);
         }else if(u.is(air)) {
+            if(has(1)){
+
+            }
             if (!l.is(air) && ul.is(sand)) {
                 /*if (ul.getState() == 1 || ll.getType() != air || ull.getType() != air) {
                     type = sand;
@@ -57,6 +58,8 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
                     state = !ur.getState();
                 }*/
             }
+        }else{
+            state = !state;
         }
     }
 }

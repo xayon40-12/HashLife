@@ -10,6 +10,7 @@
 #include "Hashable.hpp"
 
 enum Type {air, rock, sand, sandGenerator};
+enum Direction {left, right, up, down};
 
 class Physics: public Automaton<Physics> {
 private:
