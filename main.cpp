@@ -6,6 +6,7 @@
 #include "Wireworld.hpp"
 #include "Cave.hpp"
 #include "Physics.hpp"
+#include "Griffeath.hpp"
 
 
 void life();
@@ -13,13 +14,14 @@ void rule(int n);
 void wireworld();
 void cave();
 void physics();
+void griffeath();
 
 int main(int arc, char *argv[]) {
     srand(time(0));
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
-            std::cout << "choices available:\n1: life\n2: rule [n]\n3: wireworld\n4: cave\n5: physics" << std::endl;
+            std::cout << "choices available:\n1: life\n2: rule [n]\n3: wireworld\n4: cave\n5: physics\n6: griffeath" << std::endl;
         }else if(s == "life" || s == "1")
             life();
         else if(s == "rule" || s == "2"){
@@ -33,10 +35,28 @@ int main(int arc, char *argv[]) {
             cave();
         else if(s == "physics" || s == "5")
             physics();
+        else if(s == "griffeath" || s == "6")
+            griffeath();
     }else{
         life();
     }
     return 0;
+}
+
+void griffeath(){
+    long size = 24, size2 = 10*size;
+    std::cout << "\033[2J\033[?25l";
+    Tree<Griffeath> t = Tree<Griffeath>(0).expend(size);
+    for(int y = -size2;y<size2;y++){
+        for(int x = -size2;x<size2;x++){
+            t = t.set(x, y, Griffeath(rand()%4+1));
+        }
+    }
+    for(long i = 0;;i++){
+        t.show(size);
+        t = t.expend().nextGeneration();
+        //usleep(10000);
+    }
 }
 
 void physics(){
