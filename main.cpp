@@ -44,7 +44,7 @@ int main(int arc, char *argv[]) {
 }
 
 void griffeath(){
-    long size = 24, size2 = 10*size;
+    long size = 24, size2 = 60;
     std::cout << "\033[2J\033[?25l";
     Tree<Griffeath> t = Tree<Griffeath>(0).expend(size);
     for(int y = -size2;y<size2;y++){
@@ -53,8 +53,16 @@ void griffeath(){
         }
     }
     for(long i = 0;;i++){
+        long time = std::clock(), t1, t2;
+
         t.show(size);
+        t1 = std::clock()-time; time = std::clock();
+
         t = t.expend().nextGeneration();
+        t2 = std::clock()-time;
+
+        std::cout << "\033[" << 2*size+1 << ";1H";
+        std::cout << "i:" << i << "   t1:" << t1/1000 << "   t2:" << t2/1000 << std::endl;
         //usleep(10000);
     }
 }
