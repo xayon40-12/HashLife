@@ -53,16 +53,16 @@ void griffeath(){
         }
     }
     for(long i = 0;;i++){
-        long time = std::clock(), t1, t2;
+        auto t0 = std::chrono::high_resolution_clock::now();
 
         t.show(size);
-        t1 = std::clock()-time; time = std::clock();
+        auto t1 = std::chrono::high_resolution_clock::now();
 
         t = t.expend().nextGeneration();
-        t2 = std::clock()-time;
+        auto t2 = std::chrono::high_resolution_clock::now();
 
         std::cout << "\033[" << 2*size+1 << ";1H";
-        std::cout << "i:" << i << "   t1:" << t1/1000 << "   t2:" << t2/1000 << std::endl;
+        std::cout << "i:" << i << "   t1:" << std::chrono::duration<double, std::milli>(t1-t0).count() << "   t2:" <<std::chrono::duration<double, std::milli>(t2-t1).count() << std::endl;
         //usleep(10000);
     }
 }

@@ -227,7 +227,6 @@ template<class A> void Tree<A>::show(long x1, long y1, long x2, long y2) {
     if(y1<y2) std::swap(y1, y2);
     auto values = getRect(x1, y1, x2, y2);
     long dx = x2 - x1, dy = y1 - y2;
-    std::ostringstream os;
     for(long y = 0;y<=dy;y++){
         for(long x = 0;x<=dx;x++){
             values[y][x].show(x, y);
