@@ -18,7 +18,8 @@ class Tree{
 private:
     static std::unordered_set<Tree<A>> trees;
     static std::unordered_map<unsigned int, Tree<A>> memoizedEmpty;
-    static std::unordered_map<Tree<A>, Tree<A>> momoizedNext;
+    static std::unordered_map<Tree<A>, Tree<A>> memoizedNext;
+    static std::unordered_map<Tree<A>, std::vector<std::vector<A>>> memoizedGet;
 
     const Tree<A> *nw, *ne, *sw, *se;
     A value;
@@ -31,6 +32,10 @@ private:
 
     Tree<A> set(long tabX, long tabY, Tree<A> t);
 
+    std::vector<std::vector<A>> VConcat(std::vector<std::vector<A>> const &up, std::vector<std::vector<A>> const &down) const;
+    std::vector<std::vector<A>> HConcat(std::vector<std::vector<A>> const &left, std::vector<std::vector<A>> const &right) const;
+    std::vector<std::vector<A>> squareConcat(std::vector<std::vector<A>> const &ul, std::vector<std::vector<A>> const &ur,
+                                             std::vector<std::vector<A>> const &dl, std::vector<std::vector<A>> const &dr) const;
 public:
     Tree(A value);
     Tree(Tree<A> nw, Tree<A> ne, Tree<A> sw, Tree<A> se);
@@ -56,8 +61,8 @@ public:
     std::vector<std::vector<const Tree<A>*>> getSubTrees();
 
     A get(long x, long y);
-    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2);
-    std::vector<std::vector<A>> get();
+    std::vector<std::vector<A>> getRect(long x1, long y1, long x2, long y2);// TODO optimise using get()
+    std::vector<std::vector<A>> get() const;
 
     Tree<A> nextGeneration();
 

@@ -3,7 +3,8 @@
 //******************************************** PRIVATE ********************************************
 template<class A> std::unordered_set<Tree<A>> Tree<A>::trees;
 template<class A> std::unordered_map<unsigned int, Tree<A>> Tree<A>::memoizedEmpty;
-template<class A> std::unordered_map<Tree<A>, Tree<A>> Tree<A>::momoizedNext;
+template<class A> std::unordered_map<Tree<A>, Tree<A>> Tree<A>::memoizedNext;
+template<class A>  std::unordered_map<Tree<A>, std::vector<std::vector<A>>> Tree<A>::memoizedGet;
 
 template<class A> Tree<A> Tree<A>::center() const {
     return {*nw->se, *ne->sw, *sw->ne, *se->nw};
@@ -27,6 +28,28 @@ template<class A> Tree<A> Tree<A>::set(long tabX, long tabY, Tree<A> t) {
         else// E
             return Tree<A>(*nw, *ne, *sw, t);
     }
+}
+
+template<class A> std::vector<std::vector<A>>
+Tree<A>::VConcat(std::vector<std::vector<A>> const &up, std::vector<std::vector<A>> const &down) const{
+    std::vector<std::vector<A>> v(up);
+    v.insert(v.end(), down.begin(), down.end());
+    return v;
+}
+
+template<class A> std::vector<std::vector<A>>
+Tree<A>::HConcat(std::vector<std::vector<A>> const &left, std::vector<std::vector<A>> const &right) const{
+    std::vector<std::vector<A>> h = left;
+    for(int i = 0;i<h.size();i++)
+        h[i].insert(h[i].end(), right[i].begin(), right[i].end());
+    return h;
+}
+
+template<class A> std::vector<std::vector<A>>
+Tree<A>::squareConcat(std::vector<std::vector<A>> const &ul, std::vector<std::vector<A>> const &ur,
+                   std::vector<std::vector<A>> const &dl, std::vector<std::vector<A>> const &dr) const{
+    return VConcat(HConcat(ul, ur),
+                   HConcat(dl, dr));
 }
 
 //******************************************** PUBLIC ********************************************
@@ -174,16 +197,23 @@ template<class A> std::vector<std::vector<A>> Tree<A>::getRect(long x1, long y1,
     return values;
 }
 
-template<class A> std::vector<std::vector<A>> Tree<A>::get() {
-    return getRect(-pow, pow-1, pow-1, -pow);
+template<class A> std::vector<std::vector<A>> Tree<A>::get() const{
+    auto memo = memoizedGet.find(*this);
+    if(memo != memoizedGet.end())
+        return memo->second;
+
+    if(level == 1)
+        return memoizedGet.insert({*this, {{nw->getValue(),ne->getValue()},{sw->getValue(), se->getValue()}}}).first->second;
+    else
+        return memoizedGet.insert({*this, squareConcat(nw->get(), ne->get(), sw->get(), se->get())}).first->second;
 }
 
 template<class A> Tree<A> Tree<A>::nextGeneration() {
     if(level < 2)
         return *this;//can't update
 
-    auto memo = momoizedNext.find(*this);
-    if(memo != momoizedNext.end())
+    auto memo = memoizedNext.find(*this);
+    if(memo != memoizedNext.end())
         return memo->second;
 
     auto det = A::detectionLength();
@@ -211,7 +241,7 @@ template<class A> Tree<A> Tree<A>::nextGeneration() {
         Tree<A> t21 = Hcenter(sw, se).center();
         Tree<A> t22 = se->center();
 
-        return momoizedNext.insert({*this, Tree<A>(Tree<A>(t00, t01, t10, t11).nextGeneration(),
+        return memoizedNext.insert({*this, Tree<A>(Tree<A>(t00, t01, t10, t11).nextGeneration(),
                                                    Tree<A>(t01, t02, t11, t12).nextGeneration(),
                                                    Tree<A>(t10, t11, t20, t21).nextGeneration(),
                                                    Tree<A>(t11, t12, t21, t22).nextGeneration())}).first->second;
@@ -269,5 +299,5 @@ template<class A> Tree<A> Tree<A>::set(std::vector<std::vector<A>> tab){
 template<class A> void Tree<A>::reset(){
     trees.clear();
     memoizedEmpty.clear();
-    momoizedNext.clear();
+    memoizedNext.clear();
 }

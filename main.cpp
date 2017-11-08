@@ -108,8 +108,18 @@ void physics(){
     );
 
     for(long i = 0;;i++){
+        auto t0 = std::chrono::high_resolution_clock::now();
+
         t.show(size);
+        auto t1 = std::chrono::high_resolution_clock::now();
+
         t = t.expend().nextGeneration();
+        auto t2 = std::chrono::high_resolution_clock::now();
+
+        std::cout << "\033[" << 2*size+1 << ";1H";
+        std::cout << "i:" << i << "   t1:" << std::chrono::duration<double, std::milli>(t1-t0).count() <<
+                  "   t2:" << std::chrono::duration<double, std::milli>(t2-t1).count() <<
+                  "   fps:" << 1000/std::chrono::duration<double, std::milli>(t2-t0).count() << std::endl;
         usleep(50000);
     }
 }
