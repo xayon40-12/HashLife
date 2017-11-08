@@ -265,7 +265,12 @@ template<class A> void Tree<A>::show(long x1, long y1, long x2, long y2) {
 }
 
 template<class A> void Tree<A>::show() {
-    show(-pow, pow-1, pow-1, -pow);
+    auto values = get();
+    for(long y = 0;y<pow;y++){
+        for(long x = 0;x<pow;x++){
+            values[y][x].show(x, y);
+        }
+    }
 }
 template<class A> void Tree<A>::show(long l) {
     show(-l, l-1, l-1, -l);
