@@ -111,7 +111,7 @@ void physics(){
         auto t0 = std::chrono::high_resolution_clock::now();
 
         //t.show(size);
-        t.center(size -6).show();
+        t.center(size - 6).show();
         auto t1 = std::chrono::high_resolution_clock::now();
 
         t = t.expend().nextGeneration();

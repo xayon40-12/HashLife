@@ -214,10 +214,17 @@ template<class A> std::vector<std::vector<A>> Tree<A>::get() const{
     if(memo != memoizedGet.end())
         return memo->second;
 
+    std::vector<std::vector<A>> tab;
+
     if(level == 1)
-        return memoizedGet.insert({*this, {{nw->getValue(),ne->getValue()},{sw->getValue(), se->getValue()}}}).first->second;
+        tab = {{nw->getValue(),ne->getValue()},{sw->getValue(), se->getValue()}};
     else
-        return memoizedGet.insert({*this, squareConcat(nw->get(), ne->get(), sw->get(), se->get())}).first->second;
+        tab = squareConcat(nw->get(), ne->get(), sw->get(), se->get());
+
+    if(level < 7)// 2^6*2^6 = 4 096o so 4ko for the matrix of values, it is memoized so there will be plenty of 4ko
+        memoizedGet.insert({*this, tab});
+
+    return tab;
 }
 
 template<class A> Tree<A> Tree<A>::nextGeneration() {
@@ -278,8 +285,8 @@ template<class A> void Tree<A>::show(long x1, long y1, long x2, long y2) {
 
 template<class A> void Tree<A>::show() {
     auto values = get();
-    for(long y = 0;y<pow;y++){
-        for(long x = 0;x<pow;x++){
+    for(long y = 0;y<2*pow;y++){
+        for(long x = 0;x<2*pow;x++){
             values[y][x].show(x, y);
         }
     }
