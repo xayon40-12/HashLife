@@ -6,9 +6,6 @@ template<class A> std::unordered_map<unsigned int, Tree<A>> Tree<A>::memoizedEmp
 template<class A> std::unordered_map<Tree<A>, Tree<A>> Tree<A>::memoizedNext;
 template<class A>  std::unordered_map<Tree<A>, std::vector<std::vector<A>>> Tree<A>::memoizedGet;
 
-template<class A> Tree<A> Tree<A>::center() const {
-    return {*nw->se, *ne->sw, *sw->ne, *se->nw};
-}
 template<class A> Tree<A> Tree<A>::Hcenter(Tree<A> const *w, const Tree<A> *e) const {
     return {*w->ne, *e->nw, *w->se, *e->sw};
 }
@@ -145,6 +142,21 @@ template<class A> Tree<A> Tree<A>::expend(unsigned long size, const A &a){
         return expend(a);
     else
         return expend(size-1, a).expend(a);
+}
+
+template<class A> Tree<A> Tree<A>::center() const {
+    return {*nw->se, *ne->sw, *sw->ne, *se->nw};
+}
+
+template<class A> Tree<A> Tree<A>::center(unsigned long size) const{
+    auto tnw = nw, tne = ne, tsw = sw, tse = se;
+    for(int i = 0;i<size;i++){
+        tnw = tnw->se;
+        tne = tne->sw;
+        tsw = tsw->ne;
+        tse = tse->nw;
+    }
+    return {*tnw, *tne, *tsw, *tse};
 }
 
 template<class A> std::vector<std::vector<const Tree<A>*>> Tree<A>::getSubTrees() {

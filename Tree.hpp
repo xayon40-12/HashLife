@@ -26,7 +26,6 @@ private:
     unsigned int level;
     long pow;//2^(level-1)
 
-    Tree<A> center() const;
     Tree<A> Hcenter(Tree<A> const *w, const Tree<A> *e) const;
     Tree<A> Vcenter(Tree<A> const *n, Tree<A> const *s) const;
 
@@ -57,6 +56,8 @@ public:
     static Tree<A> generate(unsigned int level, const A &a = A());
     Tree<A> expend(const A &a = A());
     Tree<A> expend(unsigned long size, const A &a = A());
+    Tree<A> center() const;
+    Tree<A> center(unsigned long size) const;
 
     std::vector<std::vector<const Tree<A>*>> getSubTrees();
 
