@@ -19,7 +19,7 @@ public:
 
     bool operator==(Rule const &l) const override;
     void update(std::vector<std::vector<Rule>> tab, long x, long y) override;
-    void show(long x, long y) override;
+    void show(long x, long y, Window &win) override;
 
     static long detectionLength();
 

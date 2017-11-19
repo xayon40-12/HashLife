@@ -69,9 +69,9 @@ public:
 
     long getPow() const;
 
-    void show(long x1, long y1, long x2, long y2);
-    void show();
-    void show(long l);
+    void show(long x1, long y1, long x2, long y2, Window &win);
+    void show(Window &win);
+    void show(long l, Window &win);
 
     Tree<A> set(long x, long y, A const &a, long px = 0, long py = 0);
     Tree<A> set(long x1, long y1, std::vector<std::vector<A>> tab);

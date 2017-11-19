@@ -22,7 +22,7 @@ public:
 
     bool operator==(Physics const &l) const override;
     void update(std::vector<std::vector<Physics>> tab, long x, long y) override;
-    void show(long x, long y) override;
+    void show(long x, long y, Window &win) override;
 
     void be(Type type, int state = 0);
     bool is(Type type);

@@ -32,7 +32,7 @@ void Life::update(std::vector<std::vector<Life>> tab, long x, long y) {
     else if(sum != 2) state = 0;
 }
 
-void Life::show(long x, long y) {
+void Life::show(long x, long y, Window &win) {
     std::ostringstream oss;
     oss << (state==1?color("  ", 10):"  ");
     std::cout << "\033[" << y+1 << ";" << 2*x+1 << "H" << oss.str();

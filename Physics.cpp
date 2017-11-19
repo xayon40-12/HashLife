@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <ncurses.h>
 #include "Physics.hpp"
 
 #include "Physics.hpp"
@@ -54,11 +55,13 @@ void Physics::update(std::vector<std::vector<Physics>> tab, long x, long y) {
     }
 }
 
-void Physics::show(long x, long y) {
-    std::ostringstream oss;
-    std::vector<int> colors = {0,8,11};
-    oss << color("  ", colors[type]);
-    std::cout << "\033[" << y+1 << ";" << 2*x+1 << "H" << oss.str();
+void Physics::show(long x, long y, Window &win) {
+    if(type == 0) return;
+    std::vector<Colour> colors = {Colour::black(),Colour::gray(),Colour::yellow(), Colour::green()};
+    long w = 3;
+    win.setColour(colors[type]);
+    win.fillRect(x*w, y*w, w, w);
+    //std::cout << "\033[" << y+1 << ";" << 2*x+1 << "H" << color("  ", colors[type]);
 }
 
 void Physics::be(Type type, int state) {

@@ -18,7 +18,7 @@ public:
 
     bool operator==(Griffeath const &l) const override;
     void update(std::vector<std::vector<Griffeath>> tab, long x, long y) override;
-    void show(long x, long y) override;
+    void show(long x, long y, Window &win) override;
 
     static long detectionLength();
 

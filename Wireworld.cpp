@@ -34,7 +34,7 @@ void Wireworld::update(std::vector<std::vector<Wireworld>> tab, long x, long y) 
     }
 }
 
-void Wireworld::show(long x, long y) {
+void Wireworld::show(long x, long y, Window &win) {
     std::ostringstream oss;
     int colors[] = {0, 9, 14, 11};
     oss << color("  ", (colors[state]));

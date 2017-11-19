@@ -221,7 +221,7 @@ template<class A> std::vector<std::vector<A>> Tree<A>::get() const{
     else
         tab = squareConcat(nw->get(), ne->get(), sw->get(), se->get());
 
-    if(level < 7)// 2^6*2^6 = 4 096o so 4ko for the matrix of values, it is memoized so there will be plenty of 4ko
+    if(level <= 7)// 2^7*2^7 = 16 384o so 16ko for the matrix of values, it is memoized so there will be plenty of 16ko
         memoizedGet.insert({*this, tab});
 
     return tab;
@@ -271,28 +271,28 @@ template<class A> long Tree<A>::getPow() const {
     return pow;
 }
 
-template<class A> void Tree<A>::show(long x1, long y1, long x2, long y2) {
+template<class A> void Tree<A>::show(long x1, long y1, long x2, long y2, Window &win) {
     if(x1>x2) std::swap(x1, x2);
     if(y1<y2) std::swap(y1, y2);
     auto values = getRect(x1, y1, x2, y2);
     long dx = x2 - x1, dy = y1 - y2;
     for(long y = 0;y<=dy;y++){
         for(long x = 0;x<=dx;x++){
-            values[y][x].show(x, y);
+            values[y][x].show(x, y, win);
         }
     }
 }
 
-template<class A> void Tree<A>::show() {
+template<class A> void Tree<A>::show(Window &win) {
     auto values = get();
     for(long y = 0;y<2*pow;y++){
         for(long x = 0;x<2*pow;x++){
-            values[y][x].show(x, y);
+            values[y][x].show(x, y, win);
         }
     }
 }
-template<class A> void Tree<A>::show(long l) {
-    show(-l, l-1, l-1, -l);
+template<class A> void Tree<A>::show(long l, Window &win) {
+    show(-l, l-1, l-1, -l, win);
 }
 
 template<class A> Tree<A> Tree<A>::set(long x, long y, A const &a, long px, long py) {

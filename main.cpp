@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unistd.h>
+#include <SDL/Keyboard.hpp>
 
 #include "Tree.hpp"
 #include "Rule.hpp"
@@ -8,6 +9,8 @@
 #include "Physics.hpp"
 #include "Griffeath.hpp"
 
+Event event;
+static Window win("Physics", 800, 600);
 
 void life();
 void rule(int n);
@@ -18,6 +21,7 @@ void griffeath();
 
 int main(int arc, char *argv[]) {
     srand(time(0));
+
     if(arc>1){
         auto s = std::string(argv[1]);
         if(s == "-help" || s == "-h" || s == "h" || s == "help"){
@@ -40,6 +44,7 @@ int main(int arc, char *argv[]) {
     }else{
         life();
     }
+
     return 0;
 }
 
@@ -55,7 +60,7 @@ void griffeath(){
     for(long i = 0;;i++){
         auto t0 = std::chrono::high_resolution_clock::now();
 
-        t.show(size);
+        t.show(size, win);
         auto t1 = std::chrono::high_resolution_clock::now();
 
         t = t.expend().nextGeneration();
@@ -68,6 +73,7 @@ void griffeath(){
 }
 
 void physics(){
+
     long size = 24;
     std::cout << "\033[2J\033[?25l";
     Physics a(air), r(rock), s(sand), g(sandGenerator);
@@ -107,17 +113,18 @@ void physics(){
              {a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,a,}}
     );
 
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         auto t0 = std::chrono::high_resolution_clock::now();
 
-        //t.show(size);
-        t.center(size - 6).show();
+        win.setColour(Colour::black());
+        win.clear();
+        t.center(size - 8).show(win);
+        win.update();
         auto t1 = std::chrono::high_resolution_clock::now();
 
         t = t.expend().nextGeneration();
         auto t2 = std::chrono::high_resolution_clock::now();
 
-        std::cout << "\033[" << 2*size+1 << ";1H";
         std::cout << "i:" << i << "   t1:" << std::chrono::duration<double, std::milli>(t1-t0).count() <<
                   "   t2:" << std::chrono::duration<double, std::milli>(t2-t1).count() <<
                   "   fps:" << 1000/std::chrono::duration<double, std::milli>(t2-t0).count() << std::endl;
@@ -135,7 +142,7 @@ void cave(){
         }
     }
     for(long i = 0;;i++){
-        t.show(-size,size-1-i,size-1,-size-i);
+        t.show(-size,size-1-i,size-1,-size-i, win);
         if(i%size == 0)
         for(int y = -2*size-i;y < -size-i;y++){
             for(int x = -size;x<size;x++){
@@ -170,7 +177,7 @@ void wireworld(){
              {0,3,3,3,0,3,3,3,0,3,3,3,0,3,3,3,0,0,0,0,0}}
     );
     for(long i = 0;;i++){
-        t.show(size);
+        t.show(size, win);
         t = t.expend().nextGeneration();
         usleep(100000);
     }
@@ -189,10 +196,10 @@ void rule(int n){
             t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, size-1, Rule(1, n));
         }
         if(change){
-            t.show(size);
+            t.show(size, win);
             std::cout << std::endl << "rule: " << n << std::endl;
         }else
-            t.show(-size,size-1-i,size-1,-size-i);
+            t.show(-size,size-1-i,size-1,-size-i, win);
         t = t.expend({0, n}).nextGeneration();
         usleep(100);
     }
@@ -223,7 +230,7 @@ void life(){
 
         long time = std::clock(), t1, t2;
 
-        t.show(size);
+        t.show(size, win);
         t1 = std::clock()-time; time = std::clock();
 
         t = t.expend().nextGeneration();

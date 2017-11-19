@@ -32,7 +32,7 @@ void Griffeath::update(std::vector<std::vector<Griffeath>> tab, long x, long y) 
     if(sum >= 3) state = next;
 }
 
-void Griffeath::show(long x, long y) {
+void Griffeath::show(long x, long y, Window &win) {
     std::ostringstream oss;
     std::vector<int> colors = {0,11,214,202,9};
     oss << color("  ", colors[state]);

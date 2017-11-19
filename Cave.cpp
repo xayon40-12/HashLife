@@ -32,7 +32,7 @@ void Cave::update(std::vector<std::vector<Cave>> tab, long x, long y) {
     else if(sum2 > sum1) state = 2;
 }
 
-void Cave::show(long x, long y) {
+void Cave::show(long x, long y, Window &win) {
     std::ostringstream oss;
     std::vector<int> colors = {0,10,11};
     oss << color("  ", colors[state]);

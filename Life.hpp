@@ -19,7 +19,7 @@ public:
 
     bool operator==(Life const &l) const override;
     void update(std::vector<std::vector<Life>> tab, long x, long y) override;
-    void show(long x, long y) override;
+    void show(long x, long y, Window &win) override;
 
     static long detectionLength();
 

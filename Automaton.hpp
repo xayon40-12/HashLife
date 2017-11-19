@@ -8,13 +8,14 @@
 #include <vector>
 #include <unordered_map>
 #include <sstream>
+#include <SDL/Window.hpp>
 
 template <class A>
 class Automaton {
 public:
     virtual bool operator==(A const &a) const = 0;
     virtual void update(std::vector<std::vector<A>> tab, long x, long y) = 0;
-    virtual void show(long x, long y) = 0;
+    virtual void show(long x, long y, Window &win) = 0;
     //static long detectionLength()  //MUST BE OVERRIDED
 };
 
