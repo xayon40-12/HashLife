@@ -57,10 +57,11 @@ void griffeath(){
             t = t.set(x, y, Griffeath(rand()%4+1));
         }
     }
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         auto t0 = std::chrono::high_resolution_clock::now();
 
         t.show(size, win);
+        win.update();
         auto t1 = std::chrono::high_resolution_clock::now();
 
         t = t.expend().nextGeneration();
@@ -141,8 +142,9 @@ void cave(){
             t = t.set(x, y, Cave(rand()%2 + 1));
         }
     }
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         t.show(-size,size-1-i,size-1,-size-i, win);
+        win.update();
         if(i%size == 0)
         for(int y = -2*size-i;y < -size-i;y++){
             for(int x = -size;x<size;x++){
@@ -176,8 +178,9 @@ void wireworld(){
              {0,3,3,1,3,0,0,0,3,0,0,0,3,3,3,3,0,0,0,0,0},
              {0,3,3,3,0,3,3,3,0,3,3,3,0,3,3,3,0,0,0,0,0}}
     );
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         t.show(size, win);
+        win.update();
         t = t.expend().nextGeneration();
         usleep(100000);
     }
@@ -189,7 +192,7 @@ void rule(int n){
     bool change = (n == -1);
     if(change) n = 0;
     Tree<Rule> t = Tree<Rule>({0, n}).expend(size, {0, n}).set(0, -size, Rule(1, n));
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         if(i%(2*size) == 0 && change){
             n++;
             Tree<Rule>::reset();
@@ -197,9 +200,12 @@ void rule(int n){
         }
         if(change){
             t.show(size, win);
+            win.update();
             std::cout << std::endl << "rule: " << n << std::endl;
-        }else
-            t.show(-size,size-1-i,size-1,-size-i, win);
+        }else {
+            t.show(-size, size - 1 - i, size - 1, -size - i, win);
+            win.update();
+        }
         t = t.expend({0, n}).nextGeneration();
         usleep(100);
     }
@@ -221,7 +227,7 @@ void life(){
 
     long size = 24;
     std::cout << "\033[2J\033[?25l";
-    for(long i = 0;;i++){
+    for(long i = 0;!Keyboard::isKeyPressed(SDLK_ESCAPE);i++){
         if(i%250 == 0)
             t = Tree<Life>(0).expend(20).set({{0, 0, 0, 0},
                                               {0, 1, 0, 1},
@@ -231,6 +237,7 @@ void life(){
         long time = std::clock(), t1, t2;
 
         t.show(size, win);
+        win.update();
         t1 = std::clock()-time; time = std::clock();
 
         t = t.expend().nextGeneration();
